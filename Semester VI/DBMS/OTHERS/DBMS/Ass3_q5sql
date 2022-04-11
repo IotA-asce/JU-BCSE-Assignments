@@ -1,0 +1,55 @@
+ assignment 3 question number 5
+
+CREATE TABLE BOOK_DETAILS (
+	id INTEGER PRIMARY KEY,
+	title VARCHAR(50) NOT NULL,
+	author VARCHAR(50),
+	publisher VARCHAR(50),
+	price NUMBER
+);
+
+CREATE TABLE BOOK (
+	book_id INTEGER,
+	serial_id INTEGER,
+	PRIMARY KEY(book_id, serial_id),
+	FOREIGN KEY(book_id) REFERENCES BOOK_DETAILS(id)
+);
+
+CREATE TABLE ROLES (
+	id INTEGER PRIMARY KEY,
+	book_limit INTEGER NOT NULL
+);
+
+CREATE TABLE MEMBER (
+	id INTEGER PRIMARY KEY,
+	role INTEGER NOT NULL,
+	FOREIGN KEY(role) REFERENCES ROLES(id) ON DELETE CASCADE
+);
+
+CREATE TABLE BOOK_TRANSACTION(
+	id INTEGER PRIMARY KEY,
+	member_id INTEGER NOT NULL,
+	issue_date DATE DEFAULT(SYSDATE),
+	date_to_return DATE DEFAULT(SYSDATE + 7),
+	return_date DATE,
+	book_id INTEGER NOT NULL,
+	serial_id INTEGER NOT NULL,
+	FOREIGN KEY(book_id, serial_id) REFERENCES BOOK(book_id, serial_id) ON DELETE CASCADE,
+	FOREIGN KEY(member_id) REFERENCES MEMBER(id) ON DELETE CASCADE,
+	CONSTRAINT RETURN_DATE CHECK((date_to_return - issue_date) = 7)
+);
+
+CREATE OR REPLACE TRIGGER auto_serial_generator_trigger
+BEFORE INSERT ON BOOK
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+		IF :NEW.serial_id IS NULL THEN
+			SELECT MAX(serial_id) + 1 INTO :NEW.serial_id FROM BOOK GROUP BY book_id HAVING book_id = :NEW.book_id;
+		END IF;
+	END IF;
+END;
+/
+
+SELECT book_id, COUNT(*) AS total FROM BOOK GROUP BY book_id;
+SELECT book_id, serial_id FROM BOOK INNER JOIN BOOK_TRANSACTION ON BOOK;
