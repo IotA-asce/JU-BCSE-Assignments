@@ -1,0 +1,9 @@
+-- DEPT_CODE AND DEPT_NAME
+INSERT INTO
+    DEPARTMENT
+VALUES
+    ('DT001', 'ONE'),
+    ('DT002', 'TWO'),
+    ('DT003', 'THREE'),
+    ('DT004', 'FOUR'),
+    ('DT005', 'FIVE');

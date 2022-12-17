@@ -1,0 +1,2 @@
+# Implement Uninformed Search Depth First Search algorithm considering Water Jug Problem Report Order of nodes visited and Solution Path for the search technique.
+# transfer water from amongst two jugs to reach limit
